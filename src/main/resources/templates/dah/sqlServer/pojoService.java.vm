@@ -1,0 +1,16 @@
+package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+/**
+ * @author ${author}
+ * @date ${cfg.date}
+ */
+@Service
+@Validated
+public class ${entity}Service {
+    @Autowired
+    private ${table.mapperName} ${cfg.utils.makeFirstLetterLowerCaseOf($table.mapperName)};
+
+}

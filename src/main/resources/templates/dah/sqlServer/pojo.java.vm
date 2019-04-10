@@ -1,0 +1,45 @@
+package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+
+#foreach($pkg in ${table.importPackages})
+import ${pkg};
+#end
+
+/**
+ * @author ${author}
+ * @date ${cfg.date}
+ * <p>
+ * $!{table.comment}
+ * </p>
+ */
+public class ${entity} implements Serializable {
+##        ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+
+    /**
+     * $!{field.comment}
+     */
+    #if(${cfg.utils.shouldAddSizeAnno($field)})
+    @Size(max = $field.customMap['maxLength'])
+    #end
+    #if(${cfg.utils.shouldAddNotNullAnno($field)})
+    @NotNull
+    #end
+    #if(${cfg.utils.shouldAddNotBlankAnno($field)})
+    @NotBlank
+    #end
+    private ${field.propertyType} ${field.propertyName};
+#end
+##        ----------  END 字段循环遍历  ----------
+##        ---------- BEGIN Getter Setter方法  ----------
+#foreach($field in ${table.fields})
+
+    public ${field.propertyType} get${field.capitalName}() {
+        return this.${field.propertyName};
+    }
+
+    public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+        this.${field.propertyName} = ${field.propertyName};
+    }
+#end
+}
+##        ---------- END Getter Setter方法  ----------

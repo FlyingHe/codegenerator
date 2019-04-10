@@ -1,0 +1,11 @@
+package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+
+import com.flying.utils.BaseMapperWithoutTableSuffix;
+
+/**
+ * @author ${author}
+ * @date ${cfg.date}
+ */
+public interface ${table.mapperName} implements BaseMapperWithoutTableSuffix<${entity}> {
+
+}

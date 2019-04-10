@@ -47,8 +47,16 @@ public class CodeGeneratorSqlServer {
                 Map<String, Object> map = new HashMap<>();
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
-                map.put("ognl", "com.dah.panda.service.duty.utils.Ognl");
+                map.put("ognl", "com.github.flyinghe.tools.Ognl");
                 map.put("baseMapper", "com.flying.utils.BaseMapperWithoutTableSuffix");
+                map.put("pojoPkg", "com.flying.test");
+                map.put("pojoPkgSuffix", true);
+                map.put("pojoQOPkg", "com.flying.test");
+                map.put("pojoQOPkgSuffix", true);
+                map.put("pojoServicePkg", "com.flying.test");
+                map.put("pojoServicePkgSuffix", true);
+                map.put("mapperPkg", "com.flying.test");
+                map.put("mapperPkgSuffix", true);
                 this.setMap(map);
             }
         };

@@ -1,11 +1,11 @@
-package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+package ${cfg.mapperPkg}#if(${cfg.mapperPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
 
-import com.flying.utils.BaseMapperWithoutTableSuffix;
+import ${cfg.baseMapper};
 
 /**
  * @author ${author}
  * @date ${cfg.date}
  */
-public interface ${table.mapperName} implements BaseMapperWithoutTableSuffix<${entity}> {
+public interface ${table.mapperName} implements ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseMapper)}<${entity}> {
 
 }

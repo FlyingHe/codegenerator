@@ -1,5 +1,6 @@
-package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+package ${cfg.pojoServicePkg}#if(${cfg.pojoServicePkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 

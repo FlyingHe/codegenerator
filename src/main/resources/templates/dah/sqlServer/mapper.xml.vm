@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace = "com.flying.test.$!{cfg.utils.getPkg($table.name)}.$table.mapperName">
+<mapper namespace = "${cfg.mapperPkg}#if(${cfg.mapperPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.$table.mapperName">
     <sql id = "columns">
         #foreach($field in ${table.fields})
         [${field.name}]#if($foreach.hasNext),#end
@@ -36,7 +36,7 @@
         )
     </insert>
     <select id = "getById"
-            resultType = "com.flying.test.$!{cfg.utils.getPkg($table.name)}.${entity}">
+            resultType = "${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity}">
         SELECT
         <include refid = "columns" />
         FROM [${table.name}]
@@ -80,7 +80,7 @@
         WHERE [id] = #{bean.id}
     </update>
     <select id = "getDynamically"
-            resultType = "com.flying.test.$!{cfg.utils.getPkg($table.name)}.${entity}">
+            resultType = "${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity}">
         SELECT
         <include refid = "columns" />
         FROM [${table.name}]

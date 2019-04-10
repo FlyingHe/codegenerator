@@ -1,4 +1,4 @@
-package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+package ${cfg.pojoQOPkg}#if(${cfg.pojoQOPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
 
 #foreach($pkg in ${table.importPackages})
 #if($pkg == 'java.util.Date')

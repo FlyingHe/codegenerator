@@ -1,4 +1,4 @@
-package com.flying.test.$!{cfg.utils.getPkg($table.name)};
+package ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};

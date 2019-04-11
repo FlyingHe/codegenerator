@@ -7,6 +7,6 @@ import org.junit.Test;
 public class CommonTest {
     @Test
     public void test() {
-        System.out.println(Utils.getClassSimpleNameFromFullName("BaseMapperWithoutTableSuffix"));
+        System.out.println(Utils.getClassSimpleNameFromFullName("com.flying.utils.BaseMapper"));
     }
 }

@@ -48,7 +48,7 @@ public class CodeGeneratorSqlServer {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.utils.BaseMapperWithoutTableSuffix");
+                map.put("baseMapper", "com.flying.utils.BaseMapper");
                 map.put("pojoPkg", "com.flying.test");
                 map.put("pojoPkgSuffix", true);
                 map.put("pojoQOPkg", "com.flying.test");
@@ -125,7 +125,7 @@ public class CodeGeneratorSqlServer {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.no_change);
-        strategy.setInclude("gov_insp_unit_record");
+        strategy.setInclude("gov_insp_unit_record", "count_unit_assessment");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

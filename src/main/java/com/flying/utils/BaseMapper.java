@@ -8,7 +8,7 @@ import java.util.List;
  * Created by FlyingHe on 2018/2/3.
  * 不带分表功能
  */
-public interface BaseMapperWithoutTableSuffix<T> {
+public interface BaseMapper<T> {
     /**
      * 新增实体
      *

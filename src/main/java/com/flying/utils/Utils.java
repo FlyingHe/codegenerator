@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Administrator
@@ -16,6 +15,7 @@ import java.util.Map;
  */
 public class Utils {
     public static final String CUSTOM_KEY_IS_NULLABLE = "isNullable";
+    public static final String MYSQL_CUSTOM_KEY_IS_NULLABLE = "Null";
     public static final String CUSTOM_KEY_MAX_LENGTH = "maxLength";
 
 
@@ -81,10 +81,6 @@ public class Utils {
         }
     }
 
-    public static boolean shouldAddSizeAnno(TableField tableField) {
-        return StringUtils.isNotBlank(getMaxLengthOfStr(tableField));
-    }
-
     public static String getMaxLengthOfStr(TableField tableField) {
         String result = "";
         if (null != tableField.getCustomMap() && tableField.getCustomMap().containsKey(CUSTOM_KEY_MAX_LENGTH)) {
@@ -105,18 +101,32 @@ public class Utils {
         return result;
     }
 
+    public static boolean shouldAddSizeAnno(TableField tableField) {
+        return StringUtils.isNotBlank(getMaxLengthOfStr(tableField));
+    }
+
+
     public static boolean shouldAddNotBlankAnno(TableField tableField) {
-        Map<String, Object> customMap = tableField.getCustomMap();
-        boolean isNullable = (boolean) customMap.get(CUSTOM_KEY_IS_NULLABLE);
-        String maxLength = (String) customMap.get("maxLength");
-        return !isNullable && StringUtils.isNotBlank(maxLength) && !tableField.isKeyFlag();
+        return !isNullable(tableField) && isString(tableField) && !tableField.isKeyFlag();
     }
 
     public static boolean shouldAddNotNullAnno(TableField tableField) {
-        Map<String, Object> customMap = tableField.getCustomMap();
-        boolean isNullable = (boolean) customMap.get(CUSTOM_KEY_IS_NULLABLE);
-        String maxLength = (String) customMap.get(CUSTOM_KEY_MAX_LENGTH);
-        return !isNullable && StringUtils.isBlank(maxLength) && !tableField.isKeyFlag();
+        return !isNullable(tableField) && !isString(tableField) && !tableField.isKeyFlag();
+    }
+
+    public static boolean isNullable(TableField tableField) {
+        boolean isNullable = true;
+        if (null != tableField.getCustomMap()) {
+            if (tableField.getCustomMap().containsKey(CUSTOM_KEY_IS_NULLABLE)) {
+                //SqlServer
+                isNullable = (boolean) tableField.getCustomMap().get(CUSTOM_KEY_IS_NULLABLE);
+            } else if (tableField.getCustomMap().containsKey(MYSQL_CUSTOM_KEY_IS_NULLABLE)) {
+                //mysql
+                isNullable = "YES".equalsIgnoreCase(
+                        (String) tableField.getCustomMap().get(MYSQL_CUSTOM_KEY_IS_NULLABLE));
+            }
+        }
+        return isNullable;
     }
 
     public static boolean isVarchar(TableField tableField) {

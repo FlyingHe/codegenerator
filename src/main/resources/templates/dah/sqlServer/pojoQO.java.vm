@@ -19,14 +19,15 @@ public class ${entity}QO extends ${entity} {
     #if(${field.columnType.type} == 'Date')
     /**
      * $!{field.comment}-开始时间
-    */
+     */
     private ${field.propertyType} ${field.propertyName}Start;
     /**
      * $!{field.comment}-结束时间
-    */
+     */
     private ${field.propertyType} ${field.propertyName}End;
     #end
 #end
+
 ##        ----------  END 字段循环遍历  ----------
 ##        ---------- BEGIN Getter Setter方法  ----------
 #foreach($field in ${table.fields})

@@ -19,7 +19,7 @@ public class ${entity} implements Serializable {
      * $!{field.comment}
      */
     #if(${cfg.utils.shouldAddSizeAnno($field)})
-    @Size(max = $field.customMap['maxLength'])
+    @Size(max = ${cfg.utils.getMaxLengthOfStr($field)})
     #end
     #if(${cfg.utils.shouldAddNotNullAnno($field)})
     @NotNull

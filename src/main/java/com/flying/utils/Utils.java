@@ -2,6 +2,7 @@ package com.flying.utils;
 
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -14,6 +15,10 @@ import java.util.Map;
  * @date 2019/4/8
  */
 public class Utils {
+    public static final String CUSTOM_KEY_IS_NULLABLE = "isNullable";
+    public static final String CUSTOM_KEY_MAX_LENGTH = "maxLength";
+
+
     public static String getPkgFromUnderline(String tableName) {
         return tableName.replace("_", ".").toLowerCase();
     }
@@ -77,20 +82,40 @@ public class Utils {
     }
 
     public static boolean shouldAddSizeAnno(TableField tableField) {
-        return StringUtils.isNotBlank((String) tableField.getCustomMap().get("maxLength"));
+        return StringUtils.isNotBlank(getMaxLengthOfStr(tableField));
+    }
+
+    public static String getMaxLengthOfStr(TableField tableField) {
+        String result = "";
+        if (null != tableField.getCustomMap() && tableField.getCustomMap().containsKey(CUSTOM_KEY_MAX_LENGTH)) {
+            //SqlServer
+            result = (String) tableField.getCustomMap().get(CUSTOM_KEY_MAX_LENGTH);
+        } else if (isVarchar(tableField)) {
+            //Mysql
+            int leftIndex = tableField.getType().lastIndexOf("(");
+            int rightIndex = tableField.getType().lastIndexOf(")");
+            if (-1 != leftIndex && -1 != rightIndex) {
+                try {
+                    result = String.valueOf(Integer.valueOf(tableField.getType().substring(leftIndex + 1, rightIndex)));
+                } catch (NumberFormatException e) {
+                    //do nothing
+                }
+            }
+        }
+        return result;
     }
 
     public static boolean shouldAddNotBlankAnno(TableField tableField) {
         Map<String, Object> customMap = tableField.getCustomMap();
-        boolean isNullable = (boolean) customMap.get("isNullable");
+        boolean isNullable = (boolean) customMap.get(CUSTOM_KEY_IS_NULLABLE);
         String maxLength = (String) customMap.get("maxLength");
         return !isNullable && StringUtils.isNotBlank(maxLength) && !tableField.isKeyFlag();
     }
 
     public static boolean shouldAddNotNullAnno(TableField tableField) {
         Map<String, Object> customMap = tableField.getCustomMap();
-        boolean isNullable = (boolean) customMap.get("isNullable");
-        String maxLength = (String) customMap.get("maxLength");
+        boolean isNullable = (boolean) customMap.get(CUSTOM_KEY_IS_NULLABLE);
+        String maxLength = (String) customMap.get(CUSTOM_KEY_MAX_LENGTH);
         return !isNullable && StringUtils.isBlank(maxLength) && !tableField.isKeyFlag();
     }
 
@@ -98,4 +123,7 @@ public class Utils {
         return tableField.getType().contains("char");
     }
 
+    public static boolean isString(TableField tableField) {
+        return DbColumnType.STRING.getType().equals(tableField.getColumnType().getType());
+    }
 }

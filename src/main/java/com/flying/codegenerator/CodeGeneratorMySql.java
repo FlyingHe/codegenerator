@@ -1,4 +1,4 @@
-package com.flying;
+package com.flying.codegenerator;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;

@@ -21,7 +21,6 @@ import java.util.*;
 public class CodeGeneratorMySql {
 
     public static void main(String[] args) {
-        // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
 
         // 全局配置
@@ -50,14 +49,15 @@ public class CodeGeneratorMySql {
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
                 map.put("baseMapper", "com.flying.utils.BaseMapper");
-                map.put("pojoPkg", "com.flying.test");
-                map.put("pojoPkgSuffix", true);
-                map.put("pojoQOPkg", "com.flying.test");
-                map.put("pojoQOPkgSuffix", true);
-                map.put("pojoServicePkg", "com.flying.test");
-                map.put("pojoServicePkgSuffix", true);
-                map.put("mapperPkg", "com.flying.test");
-                map.put("mapperPkgSuffix", true);
+                map.put("baseService", "com.flying.utils.BaseService");
+                map.put("pojoPkg", "com.flying.test.domain");
+                map.put("pojoPkgSuffix", false);
+                map.put("pojoQOPkg", "com.flying.test.qo");
+                map.put("pojoQOPkgSuffix", false);
+                map.put("pojoServicePkg", "com.flying.test.service");
+                map.put("pojoServicePkgSuffix", false);
+                map.put("mapperPkg", "com.flying.test.mapper");
+                map.put("mapperPkgSuffix", false);
                 this.setMap(map);
             }
         };
@@ -65,47 +65,45 @@ public class CodeGeneratorMySql {
         String projectPath = System.getProperty("user.dir");
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
-        focList.add(new FileOutConfig("/templates/dah/sqlServer/pojo.java.vm") {
+        focList.add(new FileOutConfig("/templates/mysql/pojo.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                Utils.handleImportPkgs(tableInfo);
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName(), StringPool.DOT_JAVA);
+                Utils.handleImportPkgs(tableInfo, false);
+                return String.format("%s/src/main/java/com/flying/test/domain/%s%s", projectPath,
+                        tableInfo.getEntityName(), StringPool.DOT_JAVA);
             }
         });
         //Mapper接口
-        focList.add(new FileOutConfig("/templates/dah/sqlServer/mapper.java.vm") {
+        focList.add(new FileOutConfig("/templates/mysql/mapper.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getMapperName(), StringPool.DOT_JAVA);
+                return String.format("%s/src/main/java/com/flying/test/mapper/%s%s", projectPath,
+                        tableInfo.getMapperName(), StringPool.DOT_JAVA);
             }
         });
         //Mapper XML
-        focList.add(new FileOutConfig("/templates/dah/sqlServer/mapper.xml.vm") {
+        focList.add(new FileOutConfig("/templates/mysql/mapper.xml.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getXmlName(), StringPool.DOT_XML);
+                return String.format("%s/src/main/resources/com/flying/test/mapper/%s%s", projectPath,
+                        tableInfo.getXmlName(), StringPool.DOT_XML);
             }
         });
         //QO
-        focList.add(new FileOutConfig("/templates/dah/sqlServer/pojoQO.java.vm") {
+        focList.add(new FileOutConfig("/templates/mysql/pojoQO.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                Utils.handleImportPkgs(tableInfo);
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName() + "QO",
-                        StringPool.DOT_JAVA);
+                Utils.handleImportPkgs(tableInfo, false);
+                return String.format("%s/src/main/java/com/flying/test/qo/%s%s", projectPath,
+                        tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA);
             }
         });
         //Service
-        focList.add(new FileOutConfig("/templates/dah/sqlServer/pojoService.java.vm") {
+        focList.add(new FileOutConfig("/templates/mysql/pojoService.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName() + "Service",
-                        StringPool.DOT_JAVA);
+                return String.format("%s/src/main/java/com/flying/test/service/%s%s", projectPath,
+                        tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA);
             }
         });
 

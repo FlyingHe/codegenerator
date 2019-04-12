@@ -43,7 +43,7 @@ public class Utils {
         return fullName.substring(-1 == fullName.lastIndexOf(".") ? 0 : fullName.lastIndexOf(".") + 1);
     }
 
-    public static void handleImportPkgs(TableInfo tableInfo) {
+    public static void handleImportPkgs(TableInfo tableInfo, boolean needAddOtherAnno) {
         //移除Mybatis自己的注解
         List<String> excludePkg = new ArrayList<>();
         tableInfo.getImportPackages().forEach(pkg -> {
@@ -52,6 +52,9 @@ public class Utils {
             }
         });
         excludePkg.forEach(pkg -> tableInfo.getImportPackages().remove(pkg));
+        if (!needAddOtherAnno) {
+            return;
+        }
         //根据字段校验情况添加校验注解
         boolean hasSize = false;
         boolean hasNotBlank = false;

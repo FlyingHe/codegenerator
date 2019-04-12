@@ -8,7 +8,7 @@ import java.util.List;
  * Created by FlyingHe on 2018/2/3.
  * 带分表功能
  */
-public interface BaseMapperWithTableSuffix<T> {
+public interface BaseMapperWithTableSuffix<T, IDTYPE> {
     /**
      * 新增实体
      *
@@ -25,7 +25,7 @@ public interface BaseMapperWithTableSuffix<T> {
      */
     public T getById(
             @Param("id")
-                    String id,
+                    IDTYPE id,
             @Param("suffix")
                     String suffix);
 
@@ -37,7 +37,7 @@ public interface BaseMapperWithTableSuffix<T> {
      */
     public int removeById(
             @Param("id")
-                    String id,
+                    IDTYPE id,
             @Param("suffix")
                     String suffix);
 
@@ -49,7 +49,7 @@ public interface BaseMapperWithTableSuffix<T> {
      */
     public int removeByIds(
             @Param("ids")
-                    String[] ids,
+                    IDTYPE[] ids,
             @Param("suffix")
                     String suffix);
 

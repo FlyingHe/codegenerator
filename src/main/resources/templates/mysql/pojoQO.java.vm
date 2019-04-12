@@ -1,0 +1,55 @@
+package ${cfg.pojoQOPkg}#if(${cfg.pojoQOPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
+
+import ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity};
+
+#foreach($pkg in ${table.importPackages})
+#if($pkg == 'java.util.Date')
+import java.util.Date;
+#end
+#end
+
+/**
+ * @author ${author}
+ * @date ${cfg.date}
+ * <p>
+ * $!{table.comment}-查询类
+ * </p>
+ */
+public class ${entity}QO extends ${entity} {
+##        ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+    #if(${field.columnType.type} == 'Date')
+    /**
+     * $!{field.comment}-开始时间
+     */
+    private ${field.propertyType} ${field.propertyName}Start;
+    /**
+     * $!{field.comment}-结束时间
+     */
+    private ${field.propertyType} ${field.propertyName}End;
+    #end
+#end
+
+##        ----------  END 字段循环遍历  ----------
+##        ---------- BEGIN Getter Setter方法  ----------
+#foreach($field in ${table.fields})
+    #if(${field.columnType.type} == 'Date')
+    public ${field.propertyType} get${field.capitalName}Start() {
+        return this.${field.propertyName}Start;
+    }
+
+    public void set${field.capitalName}Start(${field.propertyType} ${field.propertyName}Start) {
+        this.${field.propertyName}Start = ${field.propertyName}Start;
+    }
+
+    public ${field.propertyType} get${field.capitalName}End() {
+        return this.${field.propertyName}End;
+    }
+
+    public void set${field.capitalName}End(${field.propertyType} ${field.propertyName}End) {
+        this.${field.propertyName}End = ${field.propertyName}End;
+    }
+    #end
+#end
+}
+##        ---------- END Getter Setter方法  ----------

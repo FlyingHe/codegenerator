@@ -8,7 +8,7 @@ import java.util.List;
  * Created by FlyingHe on 2018/2/3.
  * 不带分表功能
  */
-public interface BaseMapper<T> {
+public interface BaseMapper<T, IDTYPE> {
     /**
      * 新增实体
      *
@@ -25,7 +25,7 @@ public interface BaseMapper<T> {
      */
     public T getById(
             @Param("id")
-                    String id);
+                    IDTYPE id);
 
     /**
      * 通过主键删除记录
@@ -35,7 +35,7 @@ public interface BaseMapper<T> {
      */
     public int removeById(
             @Param("id")
-                    String id);
+                    IDTYPE id);
 
     /**
      * 通过主键批量删除记录
@@ -45,7 +45,7 @@ public interface BaseMapper<T> {
      */
     public int removeByIds(
             @Param("ids")
-                    String[] ids);
+                    IDTYPE[] ids);
 
     /**
      * 根据主键更新所有字段

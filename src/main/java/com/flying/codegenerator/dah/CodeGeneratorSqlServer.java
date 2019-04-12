@@ -67,7 +67,7 @@ public class CodeGeneratorSqlServer {
         focList.add(new FileOutConfig("/templates/dah/sqlServer/pojo.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                Utils.handleImportPkgs(tableInfo);
+                Utils.handleImportPkgs(tableInfo, true);
                 return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
                         Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName(), StringPool.DOT_JAVA);
             }
@@ -92,7 +92,7 @@ public class CodeGeneratorSqlServer {
         focList.add(new FileOutConfig("/templates/dah/sqlServer/pojoQO.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                Utils.handleImportPkgs(tableInfo);
+                Utils.handleImportPkgs(tableInfo, true);
                 return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
                         Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName() + "QO",
                         StringPool.DOT_JAVA);

@@ -1,0 +1,12 @@
+package ${cfg.mapperPkg}#if(${cfg.mapperPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
+
+import ${cfg.baseMapper};
+import ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity};
+
+/**
+ * @author ${author}
+ * @date ${cfg.date}
+ */
+public interface ${table.mapperName} extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseMapper)}<${entity}, Long> {
+
+}

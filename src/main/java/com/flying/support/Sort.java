@@ -1,4 +1,4 @@
-package com.flying.utils;
+package com.flying.support;
 
 /**
  * Created by FlyingHe on 2018/2/7.

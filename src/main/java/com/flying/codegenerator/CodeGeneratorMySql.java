@@ -34,6 +34,7 @@ public class CodeGeneratorMySql {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setUrl("jdbc:mysql://localhost:3306/apm");
+//        dsc.setUrl("jdbc:mysql://localhost:3306/ssm");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("1007");
@@ -48,21 +49,28 @@ public class CodeGeneratorMySql {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.utils.BaseMapper");
-                map.put("baseService", "com.flying.utils.BaseService");
+                map.put("baseMapper", "com.flying.support.BaseMapper");
+//                map.put("baseMapper", "at.flying.domain.BaseMapper");
+                map.put("baseService", "com.flying.support.BaseService");
+//                map.put("baseService", "at.flying.domain.BaseService");
                 map.put("pojoPkg", "com.flying.test.domain");
+//                map.put("pojoPkg", "at.flying.domain");
                 map.put("pojoPkgSuffix", false);
                 map.put("pojoQOPkg", "com.flying.test.qo");
+//                map.put("pojoQOPkg", "at.flying.domain");
                 map.put("pojoQOPkgSuffix", false);
                 map.put("pojoServicePkg", "com.flying.test.service");
+//                map.put("pojoServicePkg", "at.flying.service");
                 map.put("pojoServicePkgSuffix", false);
                 map.put("mapperPkg", "com.flying.test.mapper");
+//                map.put("mapperPkg", "at.flying.interfaces");
                 map.put("mapperPkgSuffix", false);
                 this.setMap(map);
             }
         };
         // 自定义输出配置
         String projectPath = System.getProperty("user.dir");
+//        String projectPath = "D:\\WORKSPACE\\intelljIdea\\SSMProjectMaven";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         focList.add(new FileOutConfig("/templates/mysql/pojo.java.vm") {
@@ -71,6 +79,8 @@ public class CodeGeneratorMySql {
                 Utils.handleImportPkgs(tableInfo, false);
                 return String.format("%s/src/main/java/com/flying/test/domain/%s%s", projectPath,
                         tableInfo.getEntityName(), StringPool.DOT_JAVA);
+//                return String.format("%s/src/main/java/at/flying/domain/%s%s", projectPath,
+//                        tableInfo.getEntityName(), StringPool.DOT_JAVA);
             }
         });
         //Mapper接口
@@ -79,6 +89,8 @@ public class CodeGeneratorMySql {
             public String outputFile(TableInfo tableInfo) {
                 return String.format("%s/src/main/java/com/flying/test/mapper/%s%s", projectPath,
                         tableInfo.getMapperName(), StringPool.DOT_JAVA);
+//                return String.format("%s/src/main/java/at/flying/interfaces/%s%s", projectPath,
+//                        tableInfo.getMapperName(), StringPool.DOT_JAVA);
             }
         });
         //Mapper XML
@@ -87,6 +99,8 @@ public class CodeGeneratorMySql {
             public String outputFile(TableInfo tableInfo) {
                 return String.format("%s/src/main/resources/com/flying/test/mapper/%s%s", projectPath,
                         tableInfo.getXmlName(), StringPool.DOT_XML);
+//                return String.format("%s/src/main/resources/at/flying/mapper/xml/%s%s", projectPath,
+//                        tableInfo.getXmlName(), StringPool.DOT_XML);
             }
         });
         //QO
@@ -96,6 +110,8 @@ public class CodeGeneratorMySql {
                 Utils.handleImportPkgs(tableInfo, false);
                 return String.format("%s/src/main/java/com/flying/test/qo/%s%s", projectPath,
                         tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA);
+//                return String.format("%s/src/main/java/at/flying/domain/%s%s", projectPath,
+//                        tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA);
             }
         });
         //Service
@@ -104,6 +120,8 @@ public class CodeGeneratorMySql {
             public String outputFile(TableInfo tableInfo) {
                 return String.format("%s/src/main/java/com/flying/test/service/%s%s", projectPath,
                         tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA);
+//                return String.format("%s/src/main/java/at/flying/service/%s%s", projectPath,
+//                        tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA);
             }
         });
 
@@ -125,6 +143,7 @@ public class CodeGeneratorMySql {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setInclude("staff", "train_fund_recharge_record", "salary_record");
+//        strategy.setInclude("student");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

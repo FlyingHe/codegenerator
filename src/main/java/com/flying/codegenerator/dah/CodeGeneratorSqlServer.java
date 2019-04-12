@@ -48,7 +48,7 @@ public class CodeGeneratorSqlServer {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.utils.BaseMapper");
+                map.put("baseMapper", "com.flying.support.BaseMapper");
                 map.put("pojoPkg", "com.flying.test");
                 map.put("pojoPkgSuffix", true);
                 map.put("pojoQOPkg", "com.flying.test");

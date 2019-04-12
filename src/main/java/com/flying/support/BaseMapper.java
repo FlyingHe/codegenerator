@@ -1,4 +1,4 @@
-package com.flying.utils;
+package com.flying.support;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -6,9 +6,9 @@ import java.util.List;
 
 /**
  * Created by FlyingHe on 2018/2/3.
- * 带分表功能
+ * 不带分表功能
  */
-public interface BaseMapperWithTableSuffix<T, IDTYPE> {
+public interface BaseMapper<T, IDTYPE> {
     /**
      * 新增实体
      *
@@ -25,9 +25,7 @@ public interface BaseMapperWithTableSuffix<T, IDTYPE> {
      */
     public T getById(
             @Param("id")
-                    IDTYPE id,
-            @Param("suffix")
-                    String suffix);
+                    IDTYPE id);
 
     /**
      * 通过主键删除记录
@@ -37,9 +35,7 @@ public interface BaseMapperWithTableSuffix<T, IDTYPE> {
      */
     public int removeById(
             @Param("id")
-                    IDTYPE id,
-            @Param("suffix")
-                    String suffix);
+                    IDTYPE id);
 
     /**
      * 通过主键批量删除记录
@@ -49,9 +45,7 @@ public interface BaseMapperWithTableSuffix<T, IDTYPE> {
      */
     public int removeByIds(
             @Param("ids")
-                    IDTYPE[] ids,
-            @Param("suffix")
-                    String suffix);
+                    IDTYPE[] ids);
 
     /**
      * 根据主键更新所有字段

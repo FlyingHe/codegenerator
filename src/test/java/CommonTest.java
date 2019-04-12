@@ -1,5 +1,8 @@
 import com.flying.utils.Utils;
+import com.github.flyinghe.tools.CommonUtils;
 import org.junit.Test;
+
+import java.util.Date;
 
 /**
  * Created by FlyingHe on 2019/4/10.
@@ -7,7 +10,7 @@ import org.junit.Test;
 public class CommonTest {
     @Test
     public void test() {
-        System.out.println(Utils.getClassSimpleNameFromFullName("com.flying.utils.BaseMapper"));
+        System.out.println(Utils.getClassSimpleNameFromFullName("com.flying.support.BaseMapper"));
     }
 
     @Test

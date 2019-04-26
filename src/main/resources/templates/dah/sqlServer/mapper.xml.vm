@@ -3,7 +3,7 @@
 <mapper namespace = "${cfg.mapperPkg}#if(${cfg.mapperPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.$table.mapperName">
     <sql id = "columns">
         #foreach($field in ${table.fields})
-        [${field.name}]#if($foreach.hasNext),#end #if(${field.keyFlag} && !$flyingKeyColumn)#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#end
+        [${field.name}]#if($foreach.hasNext),#end #if(${field.keyFlag} && !$flyingKeyColumn)#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#set($flyingKeyIsLast = $foreach.last)#end
         #end
     </sql>
     <sql id = "querySql">
@@ -61,7 +61,7 @@
         SET
         #foreach($field in ${table.fields})
         #if(!$field.keyFlag)
-        [${field.name}] = #{${field.propertyName}}#if($foreach.hasNext),#end
+        [${field.name}] = #{${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
         #end
         #end
         WHERE [$flyingKeyColumn] = #{$flyingKeyProperty}
@@ -72,7 +72,7 @@
             #foreach($field in ${table.fields})
             #if(!$field.keyFlag)
             <if test = "@${cfg.ognl}@isNotEmpty(bean.${field.propertyName}) or empF.contains('${field.propertyName}')">
-                [${field.name}] = #{bean.${field.propertyName}}#if($foreach.hasNext),#end
+                [${field.name}] = #{bean.${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
             </if>
             #end
             #end

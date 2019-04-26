@@ -33,7 +33,7 @@ public class CodeGeneratorSqlServer {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:sqlserver://192.167.6.16:1433;databasename=panda-hd");
+        dsc.setUrl("jdbc:sqlserver://192.167.6.16:1433;databasename=panda-enforce");
         dsc.setDriverName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         dsc.setUsername("sa");
         dsc.setPassword("ciotea@2017");
@@ -41,6 +41,22 @@ public class CodeGeneratorSqlServer {
         mpg.setDataSource(dsc);
 
         // 自定义配置
+        //实体类
+        final String pojoPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        boolean pojoPkgSuffix = true;
+        //QO
+        final String pojoQOPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        boolean pojoQOPkgSuffix = true;
+        //Service
+        final String pojoServicePkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        boolean pojoServicePkgSuffix = true;
+        //Mapper接口
+        final String mapperPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        boolean mapperPkgSuffix = true;
+        //Mapper XML
+        final String mapperXmlPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        boolean mapperXmlPkgSuffix = true;
+
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
@@ -48,44 +64,51 @@ public class CodeGeneratorSqlServer {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.support.BaseMapper");
-                map.put("pojoPkg", "com.flying.test");
-                map.put("pojoPkgSuffix", true);
-                map.put("pojoQOPkg", "com.flying.test");
-                map.put("pojoQOPkgSuffix", true);
-                map.put("pojoServicePkg", "com.flying.test");
-                map.put("pojoServicePkgSuffix", true);
-                map.put("mapperPkg", "com.flying.test");
-                map.put("mapperPkgSuffix", true);
+                map.put("baseMapper", "com.dah.panda.service.enforce.common.BaseMapperWithoutTableSuffix");
+                map.put("pojoPkg", pojoPkg);
+                map.put("pojoPkgSuffix", pojoPkgSuffix);
+                map.put("pojoQOPkg", pojoQOPkg);
+                map.put("pojoQOPkgSuffix", pojoQOPkgSuffix);
+                map.put("pojoServicePkg", pojoServicePkg);
+                map.put("pojoServicePkgSuffix", pojoServicePkgSuffix);
+                map.put("mapperPkg", mapperPkg);
+                map.put("mapperPkgSuffix", mapperPkgSuffix);
                 this.setMap(map);
             }
         };
         // 自定义输出配置
         String projectPath = System.getProperty("user.dir");
+//        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\panda\\code-panda\\panda-service-enforce";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         focList.add(new FileOutConfig("/templates/dah/sqlServer/pojo.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 Utils.handleImportPkgs(tableInfo, true);
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName(), StringPool.DOT_JAVA);
+                return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                        projectPath, Utils.getSourcePathByPkg(pojoPkg),
+                        pojoPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                        tableInfo.getEntityName(), StringPool.DOT_JAVA));
             }
         });
         //Mapper接口
         focList.add(new FileOutConfig("/templates/dah/sqlServer/mapper.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getMapperName(), StringPool.DOT_JAVA);
+                return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                        projectPath, Utils.getSourcePathByPkg(mapperPkg),
+                        mapperPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                        tableInfo.getMapperName(), StringPool.DOT_JAVA));
             }
         });
         //Mapper XML
         focList.add(new FileOutConfig("/templates/dah/sqlServer/mapper.xml.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getXmlName(), StringPool.DOT_XML);
+                return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                        projectPath, Utils.getSourcePathByPkg(mapperXmlPkg),
+                        mapperXmlPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                        tableInfo.getXmlName(), StringPool.DOT_XML));
             }
         });
         //QO
@@ -93,18 +116,20 @@ public class CodeGeneratorSqlServer {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 Utils.handleImportPkgs(tableInfo, true);
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName() + "QO",
-                        StringPool.DOT_JAVA);
+                return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                        projectPath, Utils.getSourcePathByPkg(pojoQOPkg),
+                        pojoQOPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                        tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA));
             }
         });
         //Service
         focList.add(new FileOutConfig("/templates/dah/sqlServer/pojoService.java.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/%s/%s%s", projectPath,
-                        Utils.getSourcePath(tableInfo.getName()), tableInfo.getEntityName() + "Service",
-                        StringPool.DOT_JAVA);
+                return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                        projectPath, Utils.getSourcePathByPkg(pojoServicePkg),
+                        pojoServicePkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                        tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA));
             }
         });
 
@@ -125,7 +150,7 @@ public class CodeGeneratorSqlServer {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.no_change);
-        strategy.setInclude("gov_insp_unit_record", "count_unit_assessment");
+        strategy.setInclude("ws_hfgdjds");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

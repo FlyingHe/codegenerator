@@ -4,7 +4,7 @@
     <resultMap id = "${cfg.utils.makeFirstLetterLowerCaseOf($entity)}" type = "${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity}" autoMapping = "true">
         #foreach($field in ${table.fields})
         #if(${field.keyFlag} && !$flyingKeyColumn)
-        <id column = "${field.name}" property = "${field.propertyName}" />#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})
+        <id column = "${field.name}" property = "${field.propertyName}" />#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#set($flyingKeyIsLast = $foreach.last)
         #else
         <result column = "${field.name}" property = "${field.propertyName}" />
         #end
@@ -70,7 +70,7 @@
         SET
         #foreach($field in ${table.fields})
         #if(!$field.keyFlag)
-        `${field.name}` = #{${field.propertyName}}#if($foreach.hasNext),#end
+        `${field.name}` = #{${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
         #end
         #end
         WHERE `$flyingKeyColumn` = #{$flyingKeyProperty}
@@ -81,7 +81,7 @@
             #foreach($field in ${table.fields})
             #if(!$field.keyFlag)
             <if test = "@${cfg.ognl}@isNotEmpty(bean.${field.propertyName}) or empF.contains('${field.propertyName}')">
-                `${field.name}` = #{bean.${field.propertyName}}#if($foreach.hasNext),#end
+                `${field.name}` = #{bean.${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
             </if>
             #end
             #end

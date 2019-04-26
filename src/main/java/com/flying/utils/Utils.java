@@ -35,6 +35,15 @@ public class Utils {
         return getPkg(tableName).replace(".", File.separator);
     }
 
+    public static String correctPath(String path) {
+        return path.replace("//", File.separator).replace("\\\\", File.separator)
+                .replace("/\\", File.separator).replace("\\/", File.separator);
+    }
+
+    public static String getSourcePathByPkg(String pkgName) {
+        return pkgName.replace(".", File.separator);
+    }
+
     public static String makeFirstLetterLowerCaseOf(String name) {
         return name.substring(0, 1).toLowerCase() + name.substring(1);
     }

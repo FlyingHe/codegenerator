@@ -12,6 +12,7 @@ import java.util.List;
  * @author Administrator
  * @date 2019/4/12
  */
+@Transactional(readOnly = true, rollbackFor = Exception.class)
 public abstract class BaseService<ENTITY, IDTYPE, QO extends ENTITY, MAPPER extends BaseMapper<ENTITY, IDTYPE>> {
     @Autowired
     protected MAPPER mapper;

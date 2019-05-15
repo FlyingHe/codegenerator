@@ -77,8 +77,8 @@ public class CodeGeneratorSqlServer {
             }
         };
         // 自定义输出配置
-        String projectPath = System.getProperty("user.dir");
-//        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\panda\\code-panda\\panda-service-enforce";
+//        String projectPath = System.getProperty("user.dir");
+        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\panda\\code-panda\\panda-service-enforce";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         focList.add(new FileOutConfig("/templates/dah/sqlServer/pojo.java.vm") {

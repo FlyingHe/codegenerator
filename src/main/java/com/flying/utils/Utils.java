@@ -52,6 +52,13 @@ public class Utils {
         return fullName.substring(-1 == fullName.lastIndexOf(".") ? 0 : fullName.lastIndexOf(".") + 1);
     }
 
+    /**
+     * 主要加上javax.validation.constraints.*的校验注解，
+     * 移除Mybatis的com.baomidou.mybatisplus.annotation.*注解
+     *
+     * @param tableInfo
+     * @param needAddOtherAnno
+     */
     public static void handleImportPkgs(TableInfo tableInfo, boolean needAddOtherAnno) {
         //移除Mybatis自己的注解
         List<String> excludePkg = new ArrayList<>();

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "${cfg.mapperPkg}#if(${cfg.mapperPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.$table.mapperName">
+    <resultMap id = "${cfg.utils.makeFirstLetterLowerCaseOf($entity)}" type = "${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity}" autoMapping = "true">
+        #foreach($field in ${table.fields})
+        #if(${field.keyFlag} && !$flyingKeyColumn)
+        <id column = "${field.name}" property = "${field.propertyName}" />#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#set($flyingKeyIsLast = $foreach.last)
+        #else
+        <result column = "${field.name}" property = "${field.propertyName}" />
+        #end
+        #end
+    </resultMap>
+
+    <sql id = "columns">
+        #foreach($field in ${table.fields})
+        `${field.name}`#if($foreach.hasNext),#end
+        #end
+    </sql>
+    <sql id = "querySql">
+        <where>
+            #foreach($field in ${table.fields})
+            #if(!$field.keyFlag)
+            <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName})">
+                AND `${field.name}` #if(${cfg.utils.isVarchar($field)})LIKE#else=#end #{${field.propertyName}}
+            </if>
+            #if(${field.columnType.type} == 'Date')
+            <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName}Start)">
+                AND `${field.name}` &gt;= #{${field.propertyName}Start}
+            </if>
+            <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName}End)">
+                AND `${field.name}` &lt;= #{${field.propertyName}End}
+            </if>
+            #end
+            #end
+            #end
+        </where>
+    </sql>
+    <insert id = "save" useGeneratedKeys = "true" keyProperty = "$flyingKeyProperty">
+        INSERT INTO `${table.name}` (
+        <include refid = "columns" />
+        )
+        VALUES (
+        #foreach($field in ${table.fields})
+        #{${field.propertyName}}#if($foreach.hasNext),#end
+        #end
+        )
+    </insert>
+    <select id = "getById" resultMap = "${cfg.utils.makeFirstLetterLowerCaseOf($entity)}">
+        SELECT
+        <include refid = "columns" />
+        FROM `${table.name}`
+        WHERE
+        `$flyingKeyColumn` = #{$flyingKeyProperty}
+    </select>
+    <delete id = "removeById">
+        DELETE FROM `${table.name}`
+        WHERE
+        `$flyingKeyColumn` = #{$flyingKeyProperty}
+    </delete>
+    <delete id = "removeByIds">
+        DELETE FROM `${table.name}`
+        WHERE
+        `$flyingKeyColumn` IN
+        <foreach collection = "ids" item = "id" open = "(" close = ")" separator = ",">
+            #{id}
+        </foreach>
+    </delete>
+    <update id = "update">
+        UPDATE `${table.name}`
+        SET
+        #foreach($field in ${table.fields})
+        #if(!$field.keyFlag)
+        `${field.name}` = #{${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
+        #end
+        #end
+        WHERE `$flyingKeyColumn` = #{$flyingKeyProperty}
+    </update>
+    <update id = "updateDynamically">
+        UPDATE `${table.name}`
+        <set>
+            #foreach($field in ${table.fields})
+            #if(!$field.keyFlag)
+            <if test = "@${cfg.ognl}@isNotEmpty(bean.${field.propertyName}) or empF.contains('${field.propertyName}')">
+                `${field.name}` = #{bean.${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
+            </if>
+            #end
+            #end
+        </set>
+        WHERE `$flyingKeyColumn` = #{bean.$flyingKeyProperty}
+    </update>
+    <select id = "getDynamically" resultMap = "${cfg.utils.makeFirstLetterLowerCaseOf($entity)}">
+        SELECT
+        <include refid = "columns" />
+        FROM `${table.name}`
+        <include refid = "querySql" />
+    </select>
+    <select id = "countDynamically" resultType = "java.lang.Integer">
+        SELECT COUNT(`$flyingKeyColumn`) FROM `${table.name}`
+        <include refid = "querySql" />
+    </select>
+</mapper>

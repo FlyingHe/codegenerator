@@ -23,9 +23,9 @@ public abstract class BaseService<ENTITY, IDTYPE, QO extends ENTITY, MAPPER exte
 
     public Page<ENTITY> getPageDynamically(QO qo, int pn, int ps, Sort... sorts) {
         if (null != sorts && 0 != sorts.length) {
-            StringBuffer orderBy = new StringBuffer("ORDER BY");
+            StringBuffer orderBy = new StringBuffer();
             for (Sort sort : sorts) {
-                orderBy.append(String.format(" %s %s,", sort.getOrderBy(), sort.getOrderType()));
+                orderBy.append(String.format("%s %s,", sort.getOrderBy(), sort.getOrderType()));
             }
             orderBy.deleteCharAt(orderBy.length() - 1);
             PageHelper.startPage(pn, ps, orderBy.toString());

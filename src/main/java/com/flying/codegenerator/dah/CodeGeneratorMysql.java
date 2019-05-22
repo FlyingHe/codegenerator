@@ -161,8 +161,7 @@ public class CodeGeneratorMysql {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.no_change);
-        strategy.setInclude("checklist_catalog", "checklist_item", "checklist_object_mapping",
-                "risk_site_checklist_type");
+        strategy.setInclude("checklist_type");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

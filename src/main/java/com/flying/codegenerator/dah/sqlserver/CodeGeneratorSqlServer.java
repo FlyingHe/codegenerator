@@ -1,4 +1,4 @@
-package com.flying.codegenerator.dah;
+package com.flying.codegenerator.dah.sqlserver;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -42,19 +42,19 @@ public class CodeGeneratorSqlServer {
 
         // 自定义配置
         //实体类
-        final String pojoPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        final String pojoPkg = "com.flying.test.domain";
         boolean pojoPkgSuffix = true;
         //QO
-        final String pojoQOPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        final String pojoQOPkg = "com.flying.test.domain";
         boolean pojoQOPkgSuffix = true;
         //Service
-        final String pojoServicePkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        final String pojoServicePkg = "com.flying.test.domain";
         boolean pojoServicePkgSuffix = true;
         //Mapper接口
-        final String mapperPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        final String mapperPkg = "com.flying.test.domain";
         boolean mapperPkgSuffix = true;
         //Mapper XML
-        final String mapperXmlPkg = "com.dah.panda.service.enforce.domain.ws.xc";
+        final String mapperXmlPkg = "com.flying.test.domain";
         boolean mapperXmlPkgSuffix = true;
 
         InjectionConfig cfg = new InjectionConfig() {
@@ -64,7 +64,7 @@ public class CodeGeneratorSqlServer {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.dah.panda.service.enforce.common.BaseMapperWithoutTableSuffix");
+                map.put("baseMapper", "com.flying.codegenerator.dah.sqlserver.BaseMapper");
                 map.put("pojoPkg", pojoPkg);
                 map.put("pojoPkgSuffix", pojoPkgSuffix);
                 map.put("pojoQOPkg", pojoQOPkg);
@@ -77,8 +77,8 @@ public class CodeGeneratorSqlServer {
             }
         };
         // 自定义输出配置
-//        String projectPath = System.getProperty("user.dir");
-        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\panda\\code-panda\\panda-service-enforce";
+        String projectPath = System.getProperty("user.dir");
+//        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\panda\\code-panda\\panda-service-enforce";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         focList.add(new FileOutConfig("/templates/dah/sqlServer/pojo.java.vm") {
@@ -136,7 +136,7 @@ public class CodeGeneratorSqlServer {
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
-        // 配置模板
+        // 配置模板,自带的均不输出
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setEntity(null);
         templateConfig.setXml(null);
@@ -148,8 +148,11 @@ public class CodeGeneratorSqlServer {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
+        //数据库表名到实体名的映射规则
         strategy.setNaming(NamingStrategy.underline_to_camel);
+        //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.no_change);
+        //需要被逆向生成的数据库表,不设置则为全部
         strategy.setInclude("ws_hfgdjds");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());

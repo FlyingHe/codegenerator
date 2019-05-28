@@ -4,9 +4,9 @@
     <resultMap id = "${cfg.utils.makeFirstLetterLowerCaseOf($entity)}" type = "${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity}" autoMapping = "true">
         #foreach($field in ${table.fields})
         #if(${field.keyFlag} && !$flyingKeyColumn)
-        <id column = "${field.name}" property = "${field.propertyName}" />#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#set($flyingKeyIsLast = $foreach.last)
+        <id column = "${field.name}" jdbcType = "${cfg.utils.getJdbcType($field.type)}" property = "${field.propertyName}" />#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#set($flyingKeyIsLast = $foreach.last)#set($flyingKeyIdentityFlag = ${field.keyIdentityFlag})
         #else
-        <result column = "${field.name}" property = "${field.propertyName}" />
+        <result column = "${field.name}" jdbcType = "${cfg.utils.getJdbcType($field.type)}" property = "${field.propertyName}" />
         #end
         #end
     </resultMap>
@@ -21,27 +21,27 @@
             #foreach($field in ${table.fields})
             #if(!$field.keyFlag)
             <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName})">
-                AND `${field.name}` #if(${cfg.utils.isVarchar($field)})LIKE#else=#end #{${field.propertyName}}
+                AND `${field.name}` #if(${cfg.utils.isVarchar($field)})LIKE#else=#end #{${field.propertyName}, jdbcType=${cfg.utils.getJdbcType($field.type)}}
             </if>
             #if(${field.columnType.type} == 'Date')
             <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName}Start)">
-                AND `${field.name}` &gt;= #{${field.propertyName}Start}
+                AND `${field.name}` &gt;= #{${field.propertyName}Start, jdbcType=${cfg.utils.getJdbcType($field.type)}}
             </if>
             <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName}End)">
-                AND `${field.name}` &lt;= #{${field.propertyName}End}
+                AND `${field.name}` &lt;= #{${field.propertyName}End, jdbcType=${cfg.utils.getJdbcType($field.type)}}
             </if>
             #end
             #end
             #end
         </where>
     </sql>
-    <insert id = "save" useGeneratedKeys = "true" keyProperty = "$flyingKeyProperty">
+    <insert id = "save" #if($flyingKeyIdentityFlag)useGeneratedKeys = "true" keyProperty = "$flyingKeyProperty"#end>
         INSERT INTO `${table.name}` (
         <include refid = "columns" />
         )
         VALUES (
         #foreach($field in ${table.fields})
-        #{${field.propertyName}}#if($foreach.hasNext),#end
+        #{${field.propertyName}, jdbcType=${cfg.utils.getJdbcType($field.type)}}#if($foreach.hasNext),#end
         #end
         )
     </insert>
@@ -50,19 +50,19 @@
         <include refid = "columns" />
         FROM `${table.name}`
         WHERE
-        `$flyingKeyColumn` = #{$flyingKeyProperty}
+        `$flyingKeyColumn` = #{$flyingKeyProperty, jdbcType=BIGINT}
     </select>
     <delete id = "removeById">
         DELETE FROM `${table.name}`
         WHERE
-        `$flyingKeyColumn` = #{$flyingKeyProperty}
+        `$flyingKeyColumn` = #{$flyingKeyProperty, jdbcType=BIGINT}
     </delete>
     <delete id = "removeByIds">
         DELETE FROM `${table.name}`
         WHERE
         `$flyingKeyColumn` IN
         <foreach collection = "ids" item = "id" open = "(" close = ")" separator = ",">
-            #{id}
+            #{id, jdbcType=BIGINT}
         </foreach>
     </delete>
     <update id = "update">
@@ -70,10 +70,10 @@
         SET
         #foreach($field in ${table.fields})
         #if(!$field.keyFlag)
-        `${field.name}` = #{${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
+        `${field.name}` = #{${field.propertyName}, jdbcType=${cfg.utils.getJdbcType($field.type)}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
         #end
         #end
-        WHERE `$flyingKeyColumn` = #{$flyingKeyProperty}
+        WHERE `$flyingKeyColumn` = #{$flyingKeyProperty, jdbcType=BIGINT}
     </update>
     <update id = "updateDynamically">
         UPDATE `${table.name}`
@@ -81,12 +81,12 @@
             #foreach($field in ${table.fields})
             #if(!$field.keyFlag)
             <if test = "@${cfg.ognl}@isNotEmpty(bean.${field.propertyName}) or empF.contains('${field.propertyName}')">
-                `${field.name}` = #{bean.${field.propertyName}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
+                `${field.name}` = #{bean.${field.propertyName}, jdbcType=${cfg.utils.getJdbcType($field.type)}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
             </if>
             #end
             #end
         </set>
-        WHERE `$flyingKeyColumn` = #{bean.$flyingKeyProperty}
+        WHERE `$flyingKeyColumn` = #{bean.$flyingKeyProperty, jdbcType=BIGINT}
     </update>
     <select id = "getDynamically" resultMap = "${cfg.utils.makeFirstLetterLowerCaseOf($entity)}">
         SELECT

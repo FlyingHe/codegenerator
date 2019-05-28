@@ -2,7 +2,6 @@ package ${cfg.pojoServicePkg}#if(${cfg.pojoServicePkgSuffix}).$!{cfg.utils.getPk
 
 import ${cfg.baseService};
 import ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity};
-import ${cfg.pojoQOPkg}#if(${cfg.pojoQOPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity}QO;
 import ${cfg.mapperPkg}#if(${cfg.mapperPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${table.mapperName};
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class)
-public class ${entity}Service extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseService)}<${entity}, Long, ${entity}QO, ${table.mapperName}> {
+public class ${entity}Service extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseService)}<${entity}, ${table.mapperName}> {
 
 }

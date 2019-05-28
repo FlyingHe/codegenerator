@@ -6,6 +6,6 @@ import ${cfg.baseMapper};
  * @author ${author}
  * @date ${cfg.date}
  */
-public interface ${table.mapperName} extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseMapper)}<${entity}, String> {
+public interface ${table.mapperName} extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseMapper)}<${entity}> {
 
 }

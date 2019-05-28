@@ -7,6 +7,6 @@ import ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}
  * @author ${author}
  * @date ${cfg.date}
  */
-public interface ${table.mapperName} extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseMapper)}<${entity}, Long> {
+public interface ${table.mapperName} extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseMapper)}<${entity}> {
 
 }

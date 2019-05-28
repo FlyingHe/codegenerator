@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 import com.flying.sql.query.IMySqlQuery;
 import com.flying.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.*;
@@ -41,7 +42,24 @@ public class CodeGeneratorMySql {
         dsc.setDbQuery(new IMySqlQuery());
         mpg.setDataSource(dsc);
 
+
         // 自定义配置
+        //实体类
+        final String pojoPkg = "com.flying.test.domain";
+        boolean pojoPkgSuffix = false;
+        //QO
+        final String pojoQOPkg = "com.flying.test.qo";
+        boolean pojoQOPkgSuffix = false;
+        //Service
+        final String pojoServicePkg = "com.flying.test.service";
+        boolean pojoServicePkgSuffix = false;
+        //Mapper接口
+        final String mapperPkg = "com.flying.test.mapper";
+        boolean mapperPkgSuffix = false;
+        //Mapper XML
+        final String mapperXmlPkg = "com.flying.test.mapper";
+        boolean mapperXmlPkgSuffix = false;
+
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
@@ -49,22 +67,16 @@ public class CodeGeneratorMySql {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.support.BaseMapper");
-//                map.put("baseMapper", "at.flying.domain.BaseMapper");
-                map.put("baseService", "com.flying.support.BaseService");
-//                map.put("baseService", "at.flying.domain.BaseService");
-                map.put("pojoPkg", "com.flying.test.domain");
-//                map.put("pojoPkg", "at.flying.domain");
-                map.put("pojoPkgSuffix", false);
-                map.put("pojoQOPkg", "com.flying.test.qo");
-//                map.put("pojoQOPkg", "at.flying.domain");
-                map.put("pojoQOPkgSuffix", false);
-                map.put("pojoServicePkg", "com.flying.test.service");
-//                map.put("pojoServicePkg", "at.flying.service");
-                map.put("pojoServicePkgSuffix", false);
-                map.put("mapperPkg", "com.flying.test.mapper");
-//                map.put("mapperPkg", "at.flying.interfaces");
-                map.put("mapperPkgSuffix", false);
+                map.put("baseMapper", "com.flying.codegenerator.BaseMapper");
+                map.put("baseService", "com.flying.codegenerator.BaseService");
+                map.put("pojoPkg", pojoPkg);
+                map.put("pojoPkgSuffix", pojoPkgSuffix);
+                map.put("pojoQOPkg", pojoQOPkg);
+                map.put("pojoQOPkgSuffix", pojoQOPkgSuffix);
+                map.put("pojoServicePkg", pojoServicePkg);
+                map.put("pojoServicePkgSuffix", pojoServicePkgSuffix);
+                map.put("mapperPkg", mapperPkg);
+                map.put("mapperPkgSuffix", mapperPkgSuffix);
                 this.setMap(map);
             }
         };
@@ -73,62 +85,72 @@ public class CodeGeneratorMySql {
 //        String projectPath = "D:\\WORKSPACE\\intelljIdea\\SSMProjectMaven";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
-        focList.add(new FileOutConfig("/templates/mysql/pojo.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                Utils.handleImportPkgs(tableInfo, false);
-                return String.format("%s/src/main/java/com/flying/test/domain/%s%s", projectPath,
-                        tableInfo.getEntityName(), StringPool.DOT_JAVA);
-//                return String.format("%s/src/main/java/at/flying/domain/%s%s", projectPath,
-//                        tableInfo.getEntityName(), StringPool.DOT_JAVA);
-            }
-        });
+        if (StringUtils.isNotBlank(pojoPkg)) {
+            focList.add(new FileOutConfig("/templates/mysql/pojo.java.vm") {
+                @Override
+                public String outputFile(TableInfo tableInfo) {
+                    Utils.handleImportPkgs(tableInfo, false);
+                    return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                            projectPath, Utils.getSourcePathByPkg(pojoPkg),
+                            pojoPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                            tableInfo.getEntityName(), StringPool.DOT_JAVA));
+                }
+            });
+        }
         //Mapper接口
-        focList.add(new FileOutConfig("/templates/mysql/mapper.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/mapper/%s%s", projectPath,
-                        tableInfo.getMapperName(), StringPool.DOT_JAVA);
-//                return String.format("%s/src/main/java/at/flying/interfaces/%s%s", projectPath,
-//                        tableInfo.getMapperName(), StringPool.DOT_JAVA);
-            }
-        });
+        if (StringUtils.isNotBlank(mapperPkg)) {
+            focList.add(new FileOutConfig("/templates/mysql/mapper.java.vm") {
+                @Override
+                public String outputFile(TableInfo tableInfo) {
+                    return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                            projectPath, Utils.getSourcePathByPkg(mapperPkg),
+                            mapperPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                            tableInfo.getMapperName(), StringPool.DOT_JAVA));
+                }
+            });
+        }
         //Mapper XML
-        focList.add(new FileOutConfig("/templates/mysql/mapper.xml.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/resources/com/flying/test/mapper/%s%s", projectPath,
-                        tableInfo.getXmlName(), StringPool.DOT_XML);
-//                return String.format("%s/src/main/resources/at/flying/mapper/xml/%s%s", projectPath,
-//                        tableInfo.getXmlName(), StringPool.DOT_XML);
-            }
-        });
+        if (StringUtils.isNotBlank(mapperXmlPkg)) {
+            focList.add(new FileOutConfig("/templates/mysql/mapper.xml.vm") {
+                @Override
+                public String outputFile(TableInfo tableInfo) {
+                    return Utils.correctPath(String.format("%s/src/main/resources/%s/%s/%s%s",
+                            projectPath, Utils.getSourcePathByPkg(mapperXmlPkg),
+                            mapperXmlPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                            tableInfo.getXmlName(), StringPool.DOT_XML));
+                }
+            });
+        }
         //QO
-        focList.add(new FileOutConfig("/templates/mysql/pojoQO.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                Utils.handleImportPkgs(tableInfo, false);
-                return String.format("%s/src/main/java/com/flying/test/qo/%s%s", projectPath,
-                        tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA);
-//                return String.format("%s/src/main/java/at/flying/domain/%s%s", projectPath,
-//                        tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA);
-            }
-        });
+        if (StringUtils.isNotBlank(pojoQOPkg)) {
+            focList.add(new FileOutConfig("/templates/mysql/pojoQO.java.vm") {
+                @Override
+                public String outputFile(TableInfo tableInfo) {
+                    Utils.handleImportPkgs(tableInfo, false);
+                    return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                            projectPath, Utils.getSourcePathByPkg(pojoQOPkg),
+                            pojoQOPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                            tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA));
+                }
+            });
+        }
         //Service
-        focList.add(new FileOutConfig("/templates/mysql/pojoService.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                return String.format("%s/src/main/java/com/flying/test/service/%s%s", projectPath,
-                        tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA);
-//                return String.format("%s/src/main/java/at/flying/service/%s%s", projectPath,
-//                        tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA);
-            }
-        });
+        if (StringUtils.isNotBlank(pojoServicePkg)) {
+            focList.add(new FileOutConfig("/templates/mysql/pojoService.java.vm") {
+                @Override
+                public String outputFile(TableInfo tableInfo) {
+                    return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
+                            projectPath, Utils.getSourcePathByPkg(pojoServicePkg),
+                            pojoServicePkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
+                            tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA));
+                }
+            });
+        }
 
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
-        // 配置模板
+        // 配置模板,自带的均不输出
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setEntity(null);
         templateConfig.setXml(null);
@@ -140,10 +162,12 @@ public class CodeGeneratorMySql {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
+        //数据库表名到实体名的映射规则
         strategy.setNaming(NamingStrategy.underline_to_camel);
+        //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        //需要被逆向生成的数据库表,不设置则为全部
         strategy.setInclude("staff", "train_fund_recharge_record", "salary_record");
-//        strategy.setInclude("student");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

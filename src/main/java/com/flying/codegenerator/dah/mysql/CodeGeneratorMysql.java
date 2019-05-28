@@ -1,4 +1,4 @@
-package com.flying.codegenerator.dah;
+package com.flying.codegenerator.dah.mysql;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;

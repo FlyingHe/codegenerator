@@ -1,11 +1,12 @@
-package com.flying.codegenerator;
+package com.flying.codegenerator.dah.sqlserver;
 
 import com.github.flyinghe.tools.Sort;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +14,12 @@ import java.util.List;
  * @author Administrator
  * @date 2019/4/12
  */
-@Transactional(readOnly = true, rollbackFor = Exception.class)
+@Validated
 public abstract class BaseService<ENTITY, MAPPER extends BaseMapper<ENTITY>> {
     @Autowired
     protected MAPPER mapper;
 
-    public ENTITY getById(Long id) {
+    public ENTITY getById(String id) {
         return this.mapper.getById(id);
     }
 
@@ -40,19 +41,16 @@ public abstract class BaseService<ENTITY, MAPPER extends BaseMapper<ENTITY>> {
         return this.mapper.getDynamically(qo);
     }
 
-    @Transactional(readOnly = false, rollbackFor = Exception.class)
-    public ENTITY save(ENTITY entity) {
+    public ENTITY save(@Valid ENTITY entity) {
         this.mapper.save(entity);
         return entity;
     }
 
-    @Transactional(readOnly = false, rollbackFor = Exception.class)
     public void updateDynamically(ENTITY entity) {
         this.mapper.updateDynamically(entity, new ArrayList<>());
     }
 
-    @Transactional(readOnly = false, rollbackFor = Exception.class)
-    public int deleteById(Long id) {
+    public int deleteById(String id) {
         return this.mapper.removeById(id);
     }
 }

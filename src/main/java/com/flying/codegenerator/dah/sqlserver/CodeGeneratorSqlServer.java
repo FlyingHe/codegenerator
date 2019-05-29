@@ -33,7 +33,7 @@ public class CodeGeneratorSqlServer {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:sqlserver://192.167.6.16:1433;databasename=panda-enforce");
+        dsc.setUrl("jdbc:sqlserver://192.167.6.16:1433;databasename=panda-duty");
         dsc.setDriverName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         dsc.setUsername("sa");
         dsc.setPassword("ciotea@2017");
@@ -65,6 +65,7 @@ public class CodeGeneratorSqlServer {
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
                 map.put("baseMapper", "com.flying.codegenerator.dah.sqlserver.BaseMapper");
+                map.put("baseService", "com.flying.codegenerator.dah.sqlserver.BaseService");
                 map.put("pojoPkg", pojoPkg);
                 map.put("pojoPkgSuffix", pojoPkgSuffix);
                 map.put("pojoQOPkg", pojoQOPkg);
@@ -153,7 +154,7 @@ public class CodeGeneratorSqlServer {
         //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.no_change);
         //需要被逆向生成的数据库表,不设置则为全部
-        strategy.setInclude("ws_hfgdjds");
+        strategy.setInclude("archive_organization_accident");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

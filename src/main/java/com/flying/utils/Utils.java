@@ -265,7 +265,7 @@ public class Utils {
         return DbColumnType.STRING.getType().equals(tableField.getColumnType().getType());
     }
 
-    public static String getJdbcType(String cloumnType) {
+    public static String getMysqlJdbcType(String cloumnType) {
         JDBCType jdbcType = MY_SQL_JDBC_TYPE_CONVERT.convert(cloumnType);
         return null == jdbcType ? "" : jdbcType.getName();
     }

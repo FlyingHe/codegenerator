@@ -1,6 +1,6 @@
 package ${cfg.pojoServicePkg}#if(${cfg.pojoServicePkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import ${cfg.baseService};
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -10,8 +10,6 @@ import org.springframework.validation.annotation.Validated;
  */
 @Service
 @Validated
-public class ${entity}Service {
-    @Autowired
-    private ${table.mapperName} ${cfg.utils.makeFirstLetterLowerCaseOf($table.mapperName)};
+public class ${entity}Service extends ${cfg.utils.getClassSimpleNameFromFullName($cfg.baseService)}<${entity}, ${table.mapperName}>{
 
 }

@@ -1,6 +1,4 @@
-package ${cfg.pojoQOPkg}#if(${cfg.pojoQOPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
-
-import ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end.${entity};
+package ${cfg.pojoQOPkg}#if(${cfg.pojoQOPkgSuffix}).$!{cfg.utils.getPkgFromUnderline($table.name,$cfg.rmpre)}#end;
 
 #foreach($pkg in ${table.importPackages})
 #if($pkg == 'java.util.Date')
@@ -15,7 +13,7 @@ import java.util.Date;
  * $!{table.comment}-查询类
  * </p>
  */
-public class ${entity}QO extends ${entity} {
+public class ${cfg.utils.rmpreu($table,$cfg.rmpre)}QO extends ${cfg.utils.rmpreu($table,$cfg.rmpre)} {
 ##        ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
     #if(${field.columnType.type} == 'Date')

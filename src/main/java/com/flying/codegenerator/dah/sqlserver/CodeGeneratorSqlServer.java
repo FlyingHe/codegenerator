@@ -154,7 +154,7 @@ public class CodeGeneratorSqlServer {
         //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.no_change);
         //需要被逆向生成的数据库表,不设置则为全部
-        strategy.setInclude("archive_organization_accident");
+        strategy.setInclude("archive_organization");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

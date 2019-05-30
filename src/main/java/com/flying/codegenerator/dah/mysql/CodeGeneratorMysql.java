@@ -42,20 +42,22 @@ public class CodeGeneratorMysql {
         mpg.setDataSource(dsc);
 
         // 自定义配置
+        //是否移除前缀
+        boolean isRemovePrefix = true;
         //实体类
-        final String pojoPkg = "com.ciotea.spg.hdic.domain";
+        final String pojoPkg = "com.flying.test.domain";
         boolean pojoPkgSuffix = true;
         //QO
-        final String pojoQOPkg = "com.ciotea.spg.hdic.domain";
+        final String pojoQOPkg = "com.flying.test.domain";
         boolean pojoQOPkgSuffix = true;
         //Service
-        final String pojoServicePkg = "";
+        final String pojoServicePkg = "com.flying.test.domain";
         boolean pojoServicePkgSuffix = true;
         //Mapper接口
-        final String mapperPkg = "";
+        final String mapperPkg = "com.flying.test.domain";
         boolean mapperPkgSuffix = true;
         //Mapper XML
-        final String mapperXmlPkg = "com.ciotea.spg.hdic.domain";
+        final String mapperXmlPkg = "com.flying.test.domain";
         boolean mapperXmlPkgSuffix = true;
 
         InjectionConfig cfg = new InjectionConfig() {
@@ -64,8 +66,12 @@ public class CodeGeneratorMysql {
                 Map<String, Object> map = new HashMap<>();
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
+                //标识数据库表名映射实体名时是否移除表名前缀,
+                //如hdic_checklist_catalog映射成ChecklistCatalog而不是HdicChecklistCatalog
+                map.put("rmpre", isRemovePrefix);
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.ciotea.spg.hdic.domain.util.BaseMapper");
+                map.put("baseMapper", "com.flying.codegenerator.dah.mysql.BaseRepo");
+                map.put("baseService", "com.flying.codegenerator.dah.mysql.BaseService");
                 map.put("pojoPkg", pojoPkg);
                 map.put("pojoPkgSuffix", pojoPkgSuffix);
                 map.put("pojoQOPkg", pojoQOPkg);
@@ -78,8 +84,8 @@ public class CodeGeneratorMysql {
             }
         };
         // 自定义输出配置
-//        String projectPath = System.getProperty("user.dir");
-        String projectPath = "C:\\Users\\Administrator\\Desktop\\ssp";
+        String projectPath = System.getProperty("user.dir");
+//        String projectPath = "C:\\Users\\Administrator\\Desktop\\ssp";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         if (StringUtils.isNotBlank(pojoPkg)) {
@@ -89,8 +95,8 @@ public class CodeGeneratorMysql {
                     Utils.handleImportPkgs(tableInfo, false);
                     return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
                             projectPath, Utils.getSourcePathByPkg(pojoPkg),
-                            pojoPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
-                            tableInfo.getEntityName(), StringPool.DOT_JAVA));
+                            pojoPkgSuffix ? Utils.getSourcePath(tableInfo.getName(), isRemovePrefix) : "",
+                            Utils.rmpreu(tableInfo, isRemovePrefix), StringPool.DOT_JAVA));
                 }
             });
         }
@@ -101,8 +107,8 @@ public class CodeGeneratorMysql {
                 public String outputFile(TableInfo tableInfo) {
                     return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
                             projectPath, Utils.getSourcePathByPkg(mapperPkg),
-                            mapperPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
-                            tableInfo.getMapperName(), StringPool.DOT_JAVA));
+                            mapperPkgSuffix ? Utils.getSourcePath(tableInfo.getName(), isRemovePrefix) : "",
+                            Utils.rmpreu(tableInfo, isRemovePrefix) + "Repo", StringPool.DOT_JAVA));
                 }
             });
         }
@@ -113,8 +119,8 @@ public class CodeGeneratorMysql {
                 public String outputFile(TableInfo tableInfo) {
                     return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
                             projectPath, Utils.getSourcePathByPkg(mapperXmlPkg),
-                            mapperXmlPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
-                            tableInfo.getXmlName(), StringPool.DOT_XML));
+                            mapperXmlPkgSuffix ? Utils.getSourcePath(tableInfo.getName(), isRemovePrefix) : "",
+                            Utils.rmpreu(tableInfo, isRemovePrefix) + "Mapper", StringPool.DOT_XML));
                 }
             });
         }
@@ -126,8 +132,8 @@ public class CodeGeneratorMysql {
                     Utils.handleImportPkgs(tableInfo, false);
                     return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
                             projectPath, Utils.getSourcePathByPkg(pojoQOPkg),
-                            pojoQOPkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
-                            tableInfo.getEntityName() + "QO", StringPool.DOT_JAVA));
+                            pojoQOPkgSuffix ? Utils.getSourcePath(tableInfo.getName(), isRemovePrefix) : "",
+                            Utils.rmpreu(tableInfo, isRemovePrefix) + "QO", StringPool.DOT_JAVA));
                 }
             });
         }
@@ -138,8 +144,8 @@ public class CodeGeneratorMysql {
                 public String outputFile(TableInfo tableInfo) {
                     return Utils.correctPath(String.format("%s/src/main/java/%s/%s/%s%s",
                             projectPath, Utils.getSourcePathByPkg(pojoServicePkg),
-                            pojoServicePkgSuffix ? Utils.getSourcePath(tableInfo.getName()) : "",
-                            tableInfo.getEntityName() + "Service", StringPool.DOT_JAVA));
+                            pojoServicePkgSuffix ? Utils.getSourcePath(tableInfo.getName(), isRemovePrefix) : "",
+                            Utils.rmpreu(tableInfo, isRemovePrefix) + "Service", StringPool.DOT_JAVA));
                 }
             });
         }
@@ -147,7 +153,7 @@ public class CodeGeneratorMysql {
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
-        // 配置模板
+        // 配置模板,自带的均不输出
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setEntity(null);
         templateConfig.setXml(null);
@@ -159,9 +165,12 @@ public class CodeGeneratorMysql {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
+        //数据库表名到实体名的映射规则
         strategy.setNaming(NamingStrategy.underline_to_camel);
+        //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.no_change);
-        strategy.setInclude("checklist_type");
+        //需要被逆向生成的数据库表,不设置则为全部
+        strategy.setInclude("hdic_checklist_object_mapping", "hdic_checklist_catalog");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

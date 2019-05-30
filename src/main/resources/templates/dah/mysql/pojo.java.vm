@@ -1,4 +1,4 @@
-package ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkg($table.name)}#end;
+package ${cfg.pojoPkg}#if(${cfg.pojoPkgSuffix}).$!{cfg.utils.getPkgFromUnderline($table.name,$cfg.rmpre)}#end;
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -11,7 +11,7 @@ import ${pkg};
  * $!{table.comment}
  * </p>
  */
-public class ${entity} implements Serializable {
+public class ${cfg.utils.rmpreu($table,$cfg.rmpre)} implements Serializable {
 ##        ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 

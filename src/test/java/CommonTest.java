@@ -20,4 +20,17 @@ public class CommonTest {
                 "left JOIN sys.extended_properties sep on sep.major_id=so.id and sep.minor_id=0 " +
                 "where (xtype='U' or xtype='v')");
     }
+
+    @Test
+    public void test1() {
+        String[] strings = new String[]{"hdic"};
+        String entityName = "HdicHdicChecklistItem";
+
+        String result = entityName;
+        String entityNamePrefix = strings[0].substring(0, 1).toUpperCase() + strings[0].substring(1);
+        if (entityName.startsWith(entityNamePrefix)) {
+            result = entityName.replaceFirst(entityNamePrefix, "");
+        }
+        System.out.println(result);
+    }
 }

@@ -3,6 +3,7 @@ package com.flying.utils;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -32,6 +33,10 @@ public class Utils {
      * 获取Mysql数据库字段类型对应的JDBC类型
      */
     public static final MySqlJdbcTypeConvert MY_SQL_JDBC_TYPE_CONVERT = new MySqlJdbcTypeConvert();
+    /**
+     * 获取SqlServer数据库字段类型对应的JDBC类型
+     */
+    public static final SqlServerJdbcTypeConvert SQL_SERVER_JDBC_TYPE_CONVERT = new SqlServerJdbcTypeConvert();
 
     /**
      * 根据以下划线“_”方式命名的表名获取该表名对应的java包名。如student_score返回student.score
@@ -265,8 +270,91 @@ public class Utils {
         return DbColumnType.STRING.getType().equals(tableField.getColumnType().getType());
     }
 
+    /**
+     * 获取MySQL数据库字段类型对应的Jdbc类型
+     *
+     * @param cloumnType MySQL数据库字段类型
+     * @return
+     */
     public static String getMysqlJdbcType(String cloumnType) {
         JDBCType jdbcType = MY_SQL_JDBC_TYPE_CONVERT.convert(cloumnType);
         return null == jdbcType ? "" : jdbcType.getName();
+    }
+
+    /**
+     * 获取SqlServer数据库字段类型对应的Jdbc类型
+     *
+     * @param cloumnType SqlServer数据库字段类型
+     * @return
+     */
+    public static String getSqlServerJdbcType(String cloumnType) {
+        JDBCType jdbcType = SQL_SERVER_JDBC_TYPE_CONVERT.convert(cloumnType);
+        return null == jdbcType ? "" : jdbcType.getName();
+    }
+
+    /**
+     * 数据库表名映射实体名时是否移除表名前缀,
+     * 若需要移除则如hdic_checklist_catalog映射成ChecklistCatalog而不是HdicChecklistCatalog
+     * 注意:前缀根据表名的下划线"_"做分割并取第一个,若分割后的字符串数组长度&lt=1则表示没有前缀,结果不做处理
+     *
+     * @param tableInfo   数据库表信息对象
+     * @param isRemovePre 是否移除前缀
+     * @return 返回被移除前缀的实体名(若不需要移除则不做处理)
+     */
+    public static String rmpreu(TableInfo tableInfo, boolean isRemovePre) {
+        String result = tableInfo.getEntityName();
+        if (isRemovePre) {
+            String[] strings = tableInfo.getName().split("_");
+            if (strings.length > 1) {
+                //表示有前缀
+                String entityNamePrefix = strings[0].substring(0, 1).toUpperCase() + strings[0].substring(1);
+                if (tableInfo.getEntityName().startsWith(entityNamePrefix)) {
+                    result = tableInfo.getEntityName().replaceFirst(entityNamePrefix, "");
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取移除前缀的表名,仅支持以下划线“_”的格式命名的表名
+     *
+     * @param tableName 原始表名
+     * @return
+     */
+    public static String getTableNameRemovedPrefix(String tableName) {
+        String result = tableName;
+        String[] strings = tableName.split("_");
+        if (strings.length > 1) {
+            //表示有前缀
+            result = StringUtils.join(ArrayUtils.remove(strings, 0), "_");
+        }
+        return result;
+    }
+
+    /**
+     * 根据表名获取该表名对应的路径,当不需要移除前缀时支持以下划线“_”或者驼峰法的格式命名的表名,如student_score返回student/score,
+     * 当需要移除前缀时,则仅支持以下划线“_”的格式命名的表名,因为判断前缀是采用的"_"判断,如hdic_checklist_catalog返回checklist/catalog
+     * 注意：返回的路径分隔符使用File.separator获取
+     *
+     * @param tableName   传入的表名
+     * @param isRemovePre 是否移除前缀
+     * @return
+     */
+    public static String getSourcePath(String tableName, boolean isRemovePre) {
+        return getSourcePath(!isRemovePre ? tableName : getTableNameRemovedPrefix(tableName));
+    }
+
+    /**
+     * 根据以下划线“_”方式命名的表名获取该表名对应的java包名。
+     * 若不需要移除前缀则如student_score返回student.score,
+     * 若需要移除前缀则如hdic_checklist_catalog返回checklist.catalog
+     *
+     * @param tableName   传入的表名
+     * @param isRemovePre 是否移除前缀
+     * @return
+     */
+    public static String getPkgFromUnderline(String tableName, boolean isRemovePre) {
+        return getPkgFromUnderline(!isRemovePre ? tableName : getTableNameRemovedPrefix(tableName));
     }
 }

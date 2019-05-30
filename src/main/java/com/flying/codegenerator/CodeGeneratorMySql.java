@@ -34,8 +34,8 @@ public class CodeGeneratorMySql {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/apm");
-//        dsc.setUrl("jdbc:mysql://localhost:3306/ssm");
+//        dsc.setUrl("jdbc:mysql://localhost:3306/apm");
+        dsc.setUrl("jdbc:mysql://localhost:3306/ssm");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("1007");
@@ -45,19 +45,19 @@ public class CodeGeneratorMySql {
 
         // 自定义配置
         //实体类
-        final String pojoPkg = "com.flying.test.domain";
+        final String pojoPkg = "at.flying.springbootproject.entity";
         boolean pojoPkgSuffix = false;
         //QO
-        final String pojoQOPkg = "com.flying.test.qo";
+        final String pojoQOPkg = "at.flying.springbootproject.qo";
         boolean pojoQOPkgSuffix = false;
         //Service
-        final String pojoServicePkg = "com.flying.test.service";
+        final String pojoServicePkg = "at.flying.springbootproject.service";
         boolean pojoServicePkgSuffix = false;
         //Mapper接口
-        final String mapperPkg = "com.flying.test.mapper";
+        final String mapperPkg = "at.flying.springbootproject.mapper";
         boolean mapperPkgSuffix = false;
         //Mapper XML
-        final String mapperXmlPkg = "com.flying.test.mapper";
+        final String mapperXmlPkg = "at.flying.mapper";
         boolean mapperXmlPkgSuffix = false;
 
         InjectionConfig cfg = new InjectionConfig() {
@@ -67,8 +67,8 @@ public class CodeGeneratorMySql {
                 map.put("utils", new Utils());
                 map.put("date", DateFormatUtils.format(new Date(), "yyyy/MM/dd"));
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.codegenerator.BaseMapper");
-                map.put("baseService", "com.flying.codegenerator.BaseService");
+                map.put("baseMapper", "at.flying.springbootproject.mapper.BaseMapper");
+                map.put("baseService", "at.flying.springbootproject.service.BaseService");
                 map.put("pojoPkg", pojoPkg);
                 map.put("pojoPkgSuffix", pojoPkgSuffix);
                 map.put("pojoQOPkg", pojoQOPkg);
@@ -81,8 +81,8 @@ public class CodeGeneratorMySql {
             }
         };
         // 自定义输出配置
-        String projectPath = System.getProperty("user.dir");
-//        String projectPath = "D:\\WORKSPACE\\intelljIdea\\SSMProjectMaven";
+//        String projectPath = System.getProperty("user.dir");
+        String projectPath = "D:\\WORKSPACE\\intelljIdea\\SpringBootProject";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         if (StringUtils.isNotBlank(pojoPkg)) {
@@ -167,7 +167,7 @@ public class CodeGeneratorMySql {
         //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         //需要被逆向生成的数据库表,不设置则为全部
-        strategy.setInclude("staff", "train_fund_recharge_record", "salary_record");
+        strategy.setInclude("student");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

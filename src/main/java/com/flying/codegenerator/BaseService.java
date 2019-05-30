@@ -40,18 +40,18 @@ public abstract class BaseService<ENTITY, MAPPER extends BaseMapper<ENTITY>> {
         return this.mapper.getDynamically(qo);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     public ENTITY save(ENTITY entity) {
         this.mapper.save(entity);
         return entity;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     public void updateDynamically(ENTITY entity) {
         this.mapper.updateDynamically(entity, new ArrayList<>());
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = false, rollbackFor = Exception.class)
     public int deleteById(Long id) {
         return this.mapper.removeById(id);
     }

@@ -4,6 +4,7 @@ import com.github.flyinghe.tools.Sort;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author Administrator
  * @date 2019/5/30
  */
+@Service
 public abstract class BaseService<ENTITY, REPO extends BaseRepo<ENTITY>> {
 
     @Autowired

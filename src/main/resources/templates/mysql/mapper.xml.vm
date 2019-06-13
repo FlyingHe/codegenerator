@@ -95,7 +95,7 @@
         <include refid = "querySql" />
     </select>
     <select id = "countDynamically" resultType = "java.lang.Integer">
-        SELECT COUNT(`$flyingKeyColumn`) FROM `${table.name}`
+        SELECT COUNT(0) FROM `${table.name}`
         <include refid = "querySql" />
     </select>
 </mapper>

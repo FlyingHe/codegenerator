@@ -54,7 +54,9 @@ public abstract class BaseRepo<T> {
      * @return
      */
     public int removeByIds(String[] ids) {
-        return this.sqlSessionTemplate.delete(NS + "removeByIds", ids);
+        Map<String, Object> param = new HashMap<>(1);
+        param.put("ids", ids);
+        return this.sqlSessionTemplate.delete(NS + "removeByIds", param);
     }
 
     /**

@@ -43,21 +43,21 @@ public class CodeGeneratorMysql {
 
         // 自定义配置
         //是否移除前缀
-        boolean isRemovePrefix = true;
+        boolean isRemovePrefix = false;
         //实体类
-        final String pojoPkg = "com.flying.test.domain";
+        final String pojoPkg = "com.ciotea.spg.entbank.domain.enterprise";
         boolean pojoPkgSuffix = true;
         //QO
-        final String pojoQOPkg = "com.flying.test.domain";
+        final String pojoQOPkg = "com.ciotea.spg.entbank.domain.enterprise";
         boolean pojoQOPkgSuffix = true;
         //Service
-        final String pojoServicePkg = "com.flying.test.domain";
+        final String pojoServicePkg = "com.ciotea.spg.entbank.domain.enterprise";
         boolean pojoServicePkgSuffix = true;
         //Mapper接口
-        final String mapperPkg = "com.flying.test.domain";
+        final String mapperPkg = "com.ciotea.spg.entbank.domain.enterprise";
         boolean mapperPkgSuffix = true;
         //Mapper XML
-        final String mapperXmlPkg = "com.flying.test.domain";
+        final String mapperXmlPkg = "com.ciotea.spg.entbank.domain.enterprise";
         boolean mapperXmlPkgSuffix = true;
 
         InjectionConfig cfg = new InjectionConfig() {
@@ -70,8 +70,8 @@ public class CodeGeneratorMysql {
                 //如hdic_checklist_catalog映射成ChecklistCatalog而不是HdicChecklistCatalog
                 map.put("rmpre", isRemovePrefix);
                 map.put("ognl", "com.github.flyinghe.tools.Ognl");
-                map.put("baseMapper", "com.flying.codegenerator.dah.mysql.BaseRepo");
-                map.put("baseService", "com.flying.codegenerator.dah.mysql.BaseService");
+                map.put("baseMapper", "com.ciotea.zues.infrastructure.util.BaseRepo");
+                map.put("baseService", "com.ciotea.zues.infrastructure.util.BaseService");
                 map.put("pojoPkg", pojoPkg);
                 map.put("pojoPkgSuffix", pojoPkgSuffix);
                 map.put("pojoQOPkg", pojoQOPkg);
@@ -84,8 +84,8 @@ public class CodeGeneratorMysql {
             }
         };
         // 自定义输出配置
-        String projectPath = System.getProperty("user.dir");
-//        String projectPath = "C:\\Users\\Administrator\\Desktop\\ssp";
+//        String projectPath = System.getProperty("user.dir");
+        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\jiedaochanping\\code-V1\\spg\\spg-entbank-domain";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         if (StringUtils.isNotBlank(pojoPkg)) {
@@ -170,7 +170,7 @@ public class CodeGeneratorMysql {
         //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.no_change);
         //需要被逆向生成的数据库表,不设置则为全部
-        strategy.setInclude("hdic_checklist_object_mapping", "hdic_checklist_catalog");
+        strategy.setInclude("assessment_reports", "assessment_reports_file");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();

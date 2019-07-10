@@ -357,4 +357,25 @@ public class Utils {
     public static String getPkgFromUnderline(String tableName, boolean isRemovePre) {
         return getPkgFromUnderline(!isRemovePre ? tableName : getTableNameRemovedPrefix(tableName));
     }
+
+    /**
+     * 判断一些字段命名的特殊情况，返回正确的属性名.
+     * 如若字段是布尔值,命名为isGB,则返回的属性名是gB(这时get,set方法名是getgB,setgB),
+     * 若字段是其他类型,命名为pName,则返回的属性名是pName(这时get,set方法名是getpName,setpName)
+     *
+     * @param tableField 数据库字段对象
+     * @return
+     */
+    public static String getRightPropertyName(TableField tableField) {
+        String propertyName = tableField.getPropertyName();
+        String capitalName = tableField.getCapitalName();
+        if (Character.isLowerCase(capitalName.toCharArray()[0])) {
+            propertyName = capitalName;
+        } else if (DbColumnType.BOOLEAN.getType().equals(tableField.getColumnType().getType()) &&
+                Character.isUpperCase(capitalName.toCharArray()[0])) {
+            propertyName = capitalName.substring(0, 1).toLowerCase() + capitalName.substring(1);
+        }
+        return propertyName;
+    }
+
 }

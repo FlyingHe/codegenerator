@@ -6,7 +6,7 @@
         #if(${field.keyFlag} && !$flyingKeyColumn)
         <id column = "${field.name}" jdbcType = "${cfg.utils.getMysqlJdbcType($field.type)}" property = "${field.propertyName}" />#set($flyingKeyColumn = ${field.name})#set($flyingKeyProperty = ${field.propertyName})#set($flyingKeyIsLast = $foreach.last)#set($flyingKeyIdentityFlag = ${field.keyIdentityFlag})
         #else
-        <result column = "${field.name}" jdbcType = "${cfg.utils.getMysqlJdbcType($field.type)}" property = "${field.propertyName}" />
+        <result column = "${field.name}" jdbcType = "${cfg.utils.getMysqlJdbcType($field.type)}" property = "${cfg.utils.getRightPropertyName($field)}" />
         #end
         #end
     </resultMap>
@@ -20,8 +20,8 @@
         <where>
             #foreach($field in ${table.fields})
             #if(!$field.keyFlag)
-            <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName})">
-                AND `${field.name}` #if(${cfg.utils.isVarchar($field)})LIKE#else=#end #{${field.propertyName}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}
+            <if test = "@${cfg.ognl}@isNotEmpty(${cfg.utils.getRightPropertyName($field)})">
+                AND `${field.name}` #if(${cfg.utils.isVarchar($field)})LIKE#else=#end #{${cfg.utils.getRightPropertyName($field)}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}
             </if>
             #if(${field.columnType.type} == 'Date')
             <if test = "@${cfg.ognl}@isNotEmpty(${field.propertyName}Start)">
@@ -41,7 +41,7 @@
         )
         VALUES (
         #foreach($field in ${table.fields})
-        #{${field.propertyName}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}#if($foreach.hasNext),#end
+        #{${cfg.utils.getRightPropertyName($field)}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}#if($foreach.hasNext),#end
         #end
         )
     </insert>
@@ -70,7 +70,7 @@
         SET
         #foreach($field in ${table.fields})
         #if(!$field.keyFlag)
-        `${field.name}` = #{${field.propertyName}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
+        `${field.name}` = #{${cfg.utils.getRightPropertyName($field)}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
         #end
         #end
         WHERE `$flyingKeyColumn` = #{$flyingKeyProperty, jdbcType=BIGINT}
@@ -80,8 +80,8 @@
         <set>
             #foreach($field in ${table.fields})
             #if(!$field.keyFlag)
-            <if test = "@${cfg.ognl}@isNotEmpty(bean.${field.propertyName}) or empF.contains('${field.propertyName}')">
-                `${field.name}` = #{bean.${field.propertyName}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
+            <if test = "@${cfg.ognl}@isNotEmpty(bean.${cfg.utils.getRightPropertyName($field)}) or empF.contains('${cfg.utils.getRightPropertyName($field)}')">
+                `${field.name}` = #{bean.${cfg.utils.getRightPropertyName($field)}, jdbcType=${cfg.utils.getMysqlJdbcType($field.type)}}#if((!$flyingKeyIsLast && $foreach.hasNext) || ($flyingKeyIsLast && ${table.fields.size()} - 1 != $foreach.count)),#end
             </if>
             #end
             #end

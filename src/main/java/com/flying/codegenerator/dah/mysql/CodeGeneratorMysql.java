@@ -45,19 +45,19 @@ public class CodeGeneratorMysql {
         //是否移除前缀
         boolean isRemovePrefix = false;
         //实体类
-        final String pojoPkg = "com.ciotea.spg.entbank.domain.enterprise";
+        final String pojoPkg = "com.flying.test.risksite";
         boolean pojoPkgSuffix = true;
         //QO
-        final String pojoQOPkg = "com.ciotea.spg.entbank.domain.enterprise";
+        final String pojoQOPkg = "com.flying.test.risksite";
         boolean pojoQOPkgSuffix = true;
         //Service
-        final String pojoServicePkg = "com.ciotea.spg.entbank.domain.enterprise";
+        final String pojoServicePkg = "com.flying.test.risksite";
         boolean pojoServicePkgSuffix = true;
         //Mapper接口
-        final String mapperPkg = "com.ciotea.spg.entbank.domain.enterprise";
+        final String mapperPkg = "com.flying.test.risksite";
         boolean mapperPkgSuffix = true;
         //Mapper XML
-        final String mapperXmlPkg = "com.ciotea.spg.entbank.domain.enterprise";
+        final String mapperXmlPkg = "com.flying.test.risksite";
         boolean mapperXmlPkgSuffix = true;
 
         InjectionConfig cfg = new InjectionConfig() {
@@ -85,7 +85,7 @@ public class CodeGeneratorMysql {
         };
         // 自定义输出配置
 //        String projectPath = System.getProperty("user.dir");
-        String projectPath = "D:\\WORKSPACE\\intelljIdea\\dinganhua\\jiedaochanping\\code-V1\\spg\\spg-entbank-domain";
+        String projectPath = "D:\\WORKSPACE\\intelljIdea\\codegenerator";
         List<FileOutConfig> focList = new ArrayList<>();
         //实体类
         if (StringUtils.isNotBlank(pojoPkg)) {
@@ -170,7 +170,12 @@ public class CodeGeneratorMysql {
         //数据库字段名到实体属性名的映射规则
         strategy.setColumnNaming(NamingStrategy.no_change);
         //需要被逆向生成的数据库表,不设置则为全部
-        strategy.setInclude("assessment_reports", "assessment_reports_file");
+//        strategy.setInclude("riskSite_education_base_info", "riskSite_ent_base_info",
+//                "riskSite_medical_institution", "riskSite_older_lookafter_equipment_base_info",
+//                "riskSite_recreation_place",
+//                "riskSite_stay_restaurant", "riskSite_street_enterprise", "riskSite_xindu_gas_station_base_info",
+//                "riskSite_xindu_storage_base_info");
+        strategy.setInclude("gb_industryClassification");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();
